@@ -9,11 +9,10 @@ class MoviesController < ApplicationController
   def index
     @movies = Movie.order(params[:sort_by]).all
     @all_ratings = @movies.collect{|m| m.rating}.uniq.sort
+    @selected_ratings = Hash.new
     if params[:ratings] != nil
-      @movies = @movies.select do |m|
-        params[:ratings].keys.include?(m.rating)
-      end
-      @ratings = params[:ratings]
+      @movies = @movies.select{|m| params[:ratings].keys.include?(m.rating)}
+      @selected_ratings = params[:ratings]
     end
     if params[:sort_by] == "title"
       @title = "hilite"
