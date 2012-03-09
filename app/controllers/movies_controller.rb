@@ -7,6 +7,9 @@ class MoviesController < ApplicationController
   end
 
   def index
+    if ((params[:ratings] == nil && session[:sort_by]!= nil) || (params[:ratings] == nil && session[:selected_ratings]!=nil))
+      redirect_to movies_path({:ratings => session[:selected_ratings], :sort_by => session[:sort_by]})
+    end
     @movies = Movie.order(params[:sort_by]).all
     @all_ratings = @movies.collect{|m| m.rating}.uniq.sort
     @selected_ratings = Hash.new
@@ -14,6 +17,8 @@ class MoviesController < ApplicationController
       @movies = @movies.select{|m| params[:ratings].keys.include?(m.rating)}
       @selected_ratings = params[:ratings]
     end
+    session[:sort_by] = params[:sort_by]
+    session[:selected_ratings] = params[:ratings]
     if params[:sort_by] == "title"
       @title = "hilite"
     end
