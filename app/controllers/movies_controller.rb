@@ -8,13 +8,18 @@ class MoviesController < ApplicationController
 
   def index
     @movies = Movie.order(params[:sort_by]).all
-    flash[:title] = ""
-    flash[:release_date] = ""
+    @all_ratings = @movies.collect{|m| m.rating}.uniq.sort
+    if params[:ratings] != nil
+      @movies = @movies.select do |m|
+        params[:ratings].keys.include?(m.rating)
+      end
+      @ratings = params[:ratings]
+    end
     if params[:sort_by] == "title"
-      flash[:title] = "hilite"
+      @title = "hilite"
     end
     if params[:sort_by] == "release_date"
-      flash[:release_date] = "hilite"
+      @release_date = "hilite"
     end
   end
 

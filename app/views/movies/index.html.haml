@@ -1,21 +1,25 @@
 -#  This file is app/views/movies/index.html.haml
 %h1 All Movies
-
+= form_tag movies_path, :method => :get do
+ Include:
+ - @all_ratings.each do |rating|
+  = rating
+  = check_box_tag "ratings[#{rating}]"
+ = submit_tag 'Refresh', :id => "ratings_submit"
 %table#movies
-  %thead
-    %tr
-      %th{:class => flash[:title]}
-        = link_to "Movie Title", {:controller => "movies", :sort_by => "title"}, :id => "title_header"
-      %th Rating
-      %th{:class => flash[:release_date]}
-        = link_to "Release Date", {:controller => "movies", :sort_by => "release_date"}, :id => "release_date_header"
-      %th More Info
-  %tbody
-    - @movies.each do |movie|
-      %tr
-        %td= movie.title 
-        %td= movie.rating
-        %td= movie.release_date
-        %td= link_to "More about #{movie.title}", movie_path(movie)
-
+ %thead
+  %tr
+   %th{:class => @title}
+    = link_to "Movie Title", {:controller => "movies", :sort_by => "title", :ratings => @ratings}, :id => "title_header"
+   %th Rating
+   %th{:class => @release_date}
+    = link_to "Release Date", {:controller => "movies", :sort_by => "release_date", :ratings => @ratings}, :id => "release_date_header"
+   %th More Info
+ %tbody
+  - @movies.each do |movie|
+   %tr
+    %td= movie.title
+    %td= movie.rating
+    %td= movie.release_date
+    %td= link_to "More about #{movie.title}", movie_path(movie)
 = link_to 'Add new movie', new_movie_path
